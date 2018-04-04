@@ -48,7 +48,7 @@ ext {
 }
 
 dependencies {
-    implementation "com.liubase.groups:GroupMain:1.0.7"
+    implementation "com.liubase.groups:GroupMain:1.0.8"
 
     //com.android libs
     //support libraries
