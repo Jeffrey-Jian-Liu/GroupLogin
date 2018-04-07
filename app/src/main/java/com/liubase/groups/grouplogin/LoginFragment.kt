@@ -1,4 +1,4 @@
-package com.liubase.grouplogin
+package com.liubase.groups.grouplogin
 
 import android.content.*
 import android.os.*
@@ -6,6 +6,10 @@ import android.support.v4.app.*
 import android.text.*
 import android.view.*
 import android.widget.*
+import com.google.android.gms.tasks.*
+import com.google.firebase.auth.*
+import com.liubase.groups.R
+import com.liubase.groups.groupnetwork.*
 import java.util.regex.*
 
 /* Created by Jeffrey Liu on 3/04/2018. */
@@ -13,6 +17,7 @@ class LoginFragment : Fragment() {
     
     private val myTag = "Login Fragment"
     
+    lateinit var module : LoginModule
     private lateinit var lView : LinearLayout
     private lateinit var email : EditText
     private lateinit var password : EditText
@@ -25,7 +30,7 @@ class LoginFragment : Fragment() {
     override fun onCreateView(inflater : LayoutInflater, container : ViewGroup?,
             savedInstanceState : Bundle?) : View? {
         lView = inflater.inflate(R.layout.login_login, container, false) as LinearLayout
-    
+        
         email = lView.findViewById(R.id.email) as EditText
         password = lView.findViewById(R.id.password) as EditText
         login = lView.findViewById(R.id.login) as Button
@@ -37,7 +42,8 @@ class LoginFragment : Fragment() {
     
     private fun initFragment() {
         login.isEnabled = false
-        val sp : SharedPreferences = this.activity!!.getSharedPreferences("config", Context.MODE_PRIVATE)
+        val sp : SharedPreferences = this.activity!!.getSharedPreferences("config",
+                Context.MODE_PRIVATE)
         val eString = sp.getString("login_email", "")
         if (eString.isEmpty()) {
             email.addTextChangedListener(object : TextWatcher {
@@ -107,35 +113,29 @@ class LoginFragment : Fragment() {
                 }
             }
         })
-    
+        
         login.setOnClickListener {
             login.isEnabled = false
-            /*this.activity.mAuth = FirebaseAuth.getInstance()
-            pa.mAuth.signInWithEmailAndPassword(email.text.toString(),
-                    password.text.toString()).addOnCompleteListener {task ->
-                if (task.isSuccessful) {
-                    try {
-                        pa.user = pa.mAuth.currentUser!!
-                        val sp : SharedPreferences = pa.getSharedPreferences("config", Context.MODE_PRIVATE)
-                        sp.edit().putString("email",email.text.toString()).commit()
-                        val uFragment = UserFragment()
-                        pa.swapFragment(fIndex, uFragment)
-                    } catch (e : Exception) {
-                        message.text = "用户错误!!!"
-                    }
-                } else {
-                    message.visibility = View.VISIBLE
-                    if (task.exception is FirebaseAuthInvalidUserException) {
-                        message.text = "无效的用户名!!!"
-                    } else if (task.exception is FirebaseAuthInvalidCredentialsException) {
-                        message.text = "密码错误!!!"
-                    } else {
-                        message.text = "网络错误!!!"
-                    }
-                }
-            }*/
-        
-        
+            NetworkAPI.firebaseAuthEmail(email.text.toString(), password.text.toString(),
+                    OnCompleteListener {task ->
+                        if (task.isSuccessful) {
+                            try {
+                                val f = UserFragment()
+                                f.module = this.module
+                                this.module.swapFragment(2, f)
+                            } catch (e : Exception) {
+                                message.visibility = View.VISIBLE
+                                message.text = "用户错误!!!"
+                            }
+                        } else {
+                            message.visibility = View.VISIBLE
+                            when {
+                                task.exception is FirebaseAuthInvalidUserException        -> message.text = "无效的用户名!!!"
+                                task.exception is FirebaseAuthInvalidCredentialsException -> message.text = "密码错误!!!"
+                                else                                                      -> message.text = "网络错误!!!"
+                            }
+                        }
+                    })
         }
     }
 }

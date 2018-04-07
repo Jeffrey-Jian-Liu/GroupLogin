@@ -6,6 +6,6 @@
     <string name="login_login_submit">登陆</string>
     <string name="login_user_info">用户登陆资料验证</string>
     <string name="login_user_info_email">邮箱: %1$s</string>
-    <string name="login_user_check">验证</string>
+    <string name="login_check">验证</string>
     <string name="login_user_info_phone">手机: %1$s</string>
 </resources>
