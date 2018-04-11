@@ -64,3 +64,100 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 }
+
+// Upload to JCenter
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+def siteUrl ='https://github.com/jeffreyliu888/GroupLogin'
+def gitUrl ='https://github.com/jeffreyliu888/GroupLogin.git'
+
+group = "com.liubase.groups"
+version = "1.0.3"
+def libName = "GroupLogin"
+
+task sourcesJar(type: Jar) {
+    archiveName = libName+"-"+version+"-sources.jar"
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+dokka {
+    outputFormat = 'html'
+    outputDirectory = "$buildDir/javadoc"
+}
+
+task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask, dependsOn: sourcesJar) {
+    outputFormat = "javadoc"
+    outputDirectory = "$buildDir/docs/javadoc"
+}
+
+task javadoc(type: Javadoc, dependsOn: dokkaJavadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    options.encoding "UTF-8"
+    options.charSet 'UTF-8'
+    options.author true
+    options.version true
+    options.links "https://github.com/jeffreyliu888/GroupLogin"
+    failOnError false
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    archiveName = libName+"-"+version+"-javadoc.jar"
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+install {
+    repositories.mavenInstaller {
+
+        pom {
+            project {
+                packaging 'aar'
+                name 'Groups Series - GroupLogin Lib'
+                artifactId 'GroupLogin'
+                url siteUrl
+                licenses {
+                    license {
+                        name 'Groups Series - GroupLogin Lib'
+                        url 'https://github.com/jeffreyliu888/GroupLogin'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'jeffreyliu888'
+                        name 'Jeffrey Liu'
+                        email 'jeffrey.jian.liu@hotmail.com'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+    }
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+    configurations = ['archives']
+    pkg {
+        repo = "Groups"
+        name = libName
+        desc = 'Groups Series - GroupLogin Lib'
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["GPL-3.0"]
+        publish = true
+    }
+}
