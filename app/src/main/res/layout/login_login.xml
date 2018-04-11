@@ -8,8 +8,8 @@
         android:layout_margin="80dp"
         android:gravity="center"
         android:text="@string/login_groups"
-        android:textSize="@dimen/main_FontSizeBig"
         android:textColor="@android:color/black"
+        android:textSize="@dimen/main_FontSizeBig"
         android:textStyle="bold" />
 
     <EditText
@@ -43,8 +43,8 @@
         android:layout_margin="20dp"
         android:gravity="center"
         android:text="@string/login_login_submit"
-        android:textSize="@dimen/main_FontSizeMiddle"
-        android:textStyle="bold" />
+        android:textAllCaps="false"
+        android:textSize="@dimen/main_FontSizeMiddle" />
 
     <TextView
         android:id="@+id/message"

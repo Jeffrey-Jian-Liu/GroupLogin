@@ -45,15 +45,16 @@ android {
 }
 
 ext {
-    com_android_version = '27.1.0'
+    com_android_version = '27.1.1'
 }
 
 dependencies {
-    implementation "com.liubase.groups:GroupMain:1.0.12"
+    implementation "com.liubase.groups:GroupMain:1.0.15"
     implementation "com.liubase.groups:GroupNetwork:1.0.2"
 
     //com.android libs
     //support libraries
+    implementation "com.android.support:support-v4:$com_android_version"
     implementation "com.android.support:appcompat-v7:$com_android_version"
     implementation "com.android.support:support-fragment:$com_android_version"
 

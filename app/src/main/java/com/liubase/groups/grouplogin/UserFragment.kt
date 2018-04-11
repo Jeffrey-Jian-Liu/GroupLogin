@@ -2,6 +2,7 @@ package com.liubase.groups.grouplogin
 
 import android.content.*
 import android.os.*
+import android.preference.*
 import android.provider.*
 import android.support.v4.app.*
 import android.util.*
@@ -39,12 +40,23 @@ class UserFragment : Fragment() {
         image = lView.findViewById(R.id.image) as ImageView
         image.setOnClickListener {
             val filePath : String = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + System.currentTimeMillis() + ".png"
-            val imageFile = File(filePath)
+            //val imageFile = File(filePath)
             val tPhoto = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             //tPhoto.putExtra(MediaStore.EXTRA_OUTPUT,
             //Uri.fromFile(imageFile))
             startActivityForResult(tPhoto, 2)
         }
+        val title = lView.findViewById(R.id.toolbar_title) as TextView
+        title.setText(R.string.login_user_info)
+        
+        val br = lView.findViewById(R.id.toolbar_button_right) as Button
+        br.setText(R.string.login_language)
+        br.setOnClickListener{
+            val sp : SharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
+            sp.edit().putBoolean("ShowLanguage", true).apply()
+            activity?.recreate()
+        }
+        
         
         email = lView.findViewById(R.id.email) as EditText
         val se = NetworkAPI.firebaseAuthUser()?.email ?: ""
@@ -70,7 +82,7 @@ class UserFragment : Fragment() {
         }
         
         phone = lView.findViewById(R.id.phone) as EditText
-        var sp = NetworkAPI.firebaseAuthUser()?.phoneNumber ?: ""
+        val sp = NetworkAPI.firebaseAuthUser()?.phoneNumber ?: ""
         phone.setText(getString(R.string.login_user_info_phone, sp))
         
         cText = lView.findViewById(R.id.code_text) as TextView
