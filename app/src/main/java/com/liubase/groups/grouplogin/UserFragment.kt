@@ -49,15 +49,6 @@ class UserFragment : Fragment() {
         val title = lView.findViewById(R.id.toolbar_title) as TextView
         title.setText(R.string.login_user_info)
         
-        val br = lView.findViewById(R.id.toolbar_button_right) as Button
-        br.setText(R.string.login_language)
-        br.setOnClickListener{
-            val sp : SharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
-            sp.edit().putBoolean("ShowLanguage", true).apply()
-            activity?.recreate()
-        }
-        
-        
         email = lView.findViewById(R.id.email) as EditText
         val se = NetworkAPI.firebaseAuthUser()?.email ?: ""
         email.setText(getString(R.string.login_user_info_email, se))
